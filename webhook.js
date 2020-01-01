@@ -11,28 +11,33 @@ const server = app.listen(PORT, () => {
     console.log('Address of server is ', server.address());
   });
 
-app.get('/', (req, res) => {  // The server response functions are stored in the res parameter; How server responds
-                              // req is a variable that stores all the information for the incoming request from the client
+app.get('/webhook', (req, res) => {  // The server response functions are stored in the res parameter; How server responds
+                                // req is a variable that stores all the information for the incoming request from the client
 
-                              // res.send("Correct page loaded");
-  if (req.query['hub.mode'] && req.query['hub.verify_token'] === 'thegoldentux'){
-    res.status(200).send(req.query['hub.challenge']); // 200 - OK
+  let challenge = req.query['hub.challenge'];
+  let verify_token = "thegoldentux";
+  if (req.query['hub.mode']=== 'subscribe' && req.query['hub.verify_token'] === verify_token){
+    console.log('WEBHOOK_VERIFIED');
+    res.status(200).send(challenge); // 200 - OK, return challenge if tokens match
   }else {
-    res.status(403).end();  // 403 - Forbidden
+    res.sendStatus(401);  // Unauthorized token,
   }
 });
 
-app.post('/', (req, res) => {
-  console.log(req.body);
-  if (req.body.object === 'page'){
+app.post('/webhook', (req, res) => {
+  console.log("request body = ",req.body);
+  if (req.body.object === 'page'){    // checks if this is an event from a page subscription
     req.body.entry.forEach((entry) => {
-      entry.messaging.forEach((event) => {
-        if (event.message && event.message.text) {
-          sendMessage(event);
-        }
-      });
+      let webhook_event = entry.messaging[0];
+      console.log(webhook_event);
+      // entry.messaging.forEach((event) => {
+      //   if (event.message && event.message.text) {
+      //     sendMessage(event);
+      //   }
+      // });
     });
-    res.status(200).end();
+    res.status(200).send('EVENT_RECEIVED');   // OK response
+  } else{
+    res.sendStatus(404);  // PageNotFound token
   }
-
 });
