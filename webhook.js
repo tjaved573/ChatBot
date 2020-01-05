@@ -12,14 +12,16 @@ const server = app.listen(PORT, () => {
   });
 
 app.get('/webhook', (req, res) => {  // The server response functions are stored in the res parameter; How server responds
-                                // req is a variable that stores all the information for the incoming request from the client
+                                     // req is a variable that stores all the information for the incoming request from the client
 
   let challenge = req.query['hub.challenge'];
-  let verify_token = "thegoldentux";
-  if (req.query['hub.mode']=== 'subscribe' && req.query['hub.verify_token'] === verify_token){
+  let VERIFY_TOKEN = "taken";
+  if (req.query['hub.mode']=== 'subscribe' && req.query['hub.verify_token'] === VERIFY_TOKEN){
     console.log('WEBHOOK_VERIFIED');
-    res.status(200).send(challenge); // 200 - OK, return challenge if tokens match
+    res.status(200).send('Event Received')  // res.status(200).send(challenge); // 200 - OK, return challenge if tokens match
   }else {
+    console.log(req.query['hub.verify_token']);
+    console.log("here", req.query['hub.mode']);
     res.sendStatus(401);  // Unauthorized token,
   }
 });
