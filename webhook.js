@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser= require('body-parser');
 const app = express();
 const PORT = process.env.PORT || 5000;
+const apiaiApp = require('apiai')('a91d1df9e36c4916ab59741dcfba0e4c');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
@@ -45,26 +46,61 @@ app.post('/webhook', (req, res) => {
   }
 });
 
-//SEND BACK MSG (POST) TO THE CLIENT FROM SERVER
+// SEND BACK MSG (POST) TO THE CLIENT FROM SERVER
 // RESPONSE BODY(res): DATA SENT BY THE API TO THE CLIENT
 const request = require('request');
 function sendMessage(event){
-  let sender = event.sender.id;
-  let text = event.message.text;
+    let sender = event.sender.id;
+    let text = event.message.text;
 
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token: 'EAAnOvWxAGJwBAFVDuLV9XBtNpLlhAt57vJntZC6CjirUbfxBwekJJ2msw9K8QKvk6jhxZC1mmqrhYJh8wMTvMxLigxicXUnH6uVK18YsVR5OPzRNRpJZCSVxiZAMxUm1kJYVfacWQaoZBSPhL5PZB7oavYe09DDrZBiYDR2fy2ICgZDZD'},
-    method: 'POST',
-    json: {
-      recipient: {id: sender},
-      message: {text: text}
-    }
-  }, function (error, response) {
-    if (error) {
-        console.log('Error sending message: ', error);
-    } else if (response.body.error) {
-        console.log('Error: ', response.body.error);
-    }
-  });
+    // Echo User Message Back
+    // request({
+    //   url: 'https://graph.facebook.com/v2.6/me/messages',
+    //   qs: {access_token: 'EAAnOvWxAGJwBAFVDuLV9XBtNpLlhAt57vJntZC6CjirUbfxBwekJJ2msw9K8QKvk6jhxZC1mmqrhYJh8wMTvMxLigxicXUnH6uVK18YsVR5OPzRNRpJZCSVxiZAMxUm1kJYVfacWQaoZBSPhL5PZB7oavYe09DDrZBiYDR2fy2ICgZDZD'},
+    //   method: 'POST',
+    //   json: {
+    //     recipient: {id: sender},
+    //     message: {text: text}
+    //   }
+    // }, function (error, response) {
+    //   if (error) {
+    //       console.log('Error sending message: ', error);
+    //   } else if (response.body.error) {
+    //       console.log('Error: ', response.body.error);
+    //   }
+    // });
+
+  // Small talk using apiai  
+    let apiai = apiaiApp.textRequest(text, {
+      sessionId: 'tabby_cat' // use any arbitrary id
+    });
+
+    apiai.on('response', (response) => {
+      // Got a response from api.ai. Let's POST to Facebook Messenger
+      let aiText = response.result.fulfillment.speech;
+
+      request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token: 'EAAnOvWxAGJwBAEdaNe9uKE87t1D2tgqOto9xscYrynwkAOTWTsEvaabq1OeZANm67XJraIkjueS8jrrCRsExeAqq0TdKgz4nQaMmeKZB2IpZAmCC6TtWIFO2NsCvmDwQ95wKlerZAZA54uzkQUvr1lAB5KD4A22TOGPInHZCoZC8wZDZD'},
+        method: 'POST',
+        json: {
+          recipient: {id: sender},
+          message: {text: aiText}
+        }
+      }, (error, response) => {
+        if (error) {
+            console.log('Error sending message: ', error);
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error);
+        }
+      });
+    });
+
+    apiai.on('error', (error) => {
+      console.log(error);
+    });
+
+    apiai.end();
 }
+
+// integrate call to DialogFlow:
