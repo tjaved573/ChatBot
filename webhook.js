@@ -53,22 +53,22 @@ function sendMessage(event){
     let sender = event.sender.id;
     let text = event.message.text;
 
-    // Echo User Message Back
-    // request({
-    //   url: 'https://graph.facebook.com/v2.6/me/messages',
-    //   qs: {access_token: 'EAAnOvWxAGJwBAFVDuLV9XBtNpLlhAt57vJntZC6CjirUbfxBwekJJ2msw9K8QKvk6jhxZC1mmqrhYJh8wMTvMxLigxicXUnH6uVK18YsVR5OPzRNRpJZCSVxiZAMxUm1kJYVfacWQaoZBSPhL5PZB7oavYe09DDrZBiYDR2fy2ICgZDZD'},
-    //   method: 'POST',
-    //   json: {
-    //     recipient: {id: sender},
-    //     message: {text: text}
-    //   }
-    // }, function (error, response) {
-    //   if (error) {
-    //       console.log('Error sending message: ', error);
-    //   } else if (response.body.error) {
-    //       console.log('Error: ', response.body.error);
-    //   }
-    // });
+    Echo User Message Back
+    request({
+      url: 'https://graph.facebook.com/v2.6/me/messages',
+      qs: {access_token: 'EAAnOvWxAGJwBAFVDuLV9XBtNpLlhAt57vJntZC6CjirUbfxBwekJJ2msw9K8QKvk6jhxZC1mmqrhYJh8wMTvMxLigxicXUnH6uVK18YsVR5OPzRNRpJZCSVxiZAMxUm1kJYVfacWQaoZBSPhL5PZB7oavYe09DDrZBiYDR2fy2ICgZDZD'},
+      method: 'POST',
+      json: {
+        recipient: {id: sender},
+        message: {text: text}
+      }
+    }, function (error, response) {
+      if (error) {
+          console.log('Error sending message: ', error);
+      } else if (response.body.error) {
+          console.log('Error: ', response.body.error);
+      }
+    });
 
   // Small talk using apiai  
     let apiai = apiaiApp.textRequest(text, {
