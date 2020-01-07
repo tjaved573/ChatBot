@@ -1,3 +1,9 @@
+
+// - Have a bot which can pull out information about movies (use IMDB API), 
+// novels (Goodreads API), news and weather (BBC API).
+// deploy it on heroku
+
+
 const express = require('express');
 const bodyParser= require('body-parser');
 const app = express();
@@ -71,6 +77,7 @@ function sendMessage(event){
     // });
 
   // Small talk using apiai  
+  // integrate call to DialogFlow
     let apiai = apiaiApp.textRequest(text, {
       sessionId: 'tabby_cat' // use any arbitrary id
     });
@@ -101,6 +108,7 @@ function sendMessage(event){
     });
 
     apiai.end();
- }
+}
 
-// integrate call to DialogFlow:
+// deploy to heroku:
+
