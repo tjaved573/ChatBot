@@ -101,6 +101,6 @@ function sendMessage(event){
     });
 
     apiai.end();
-}
+ }
 
 // integrate call to DialogFlow:
