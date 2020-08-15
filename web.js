@@ -37,9 +37,10 @@ function sendMessage(event) {
   let sender = event.sender.id;
   let text = event.message.text;
 
+  // add private access token
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token: 'EAAnOvWxAGJwBAE2xyxz7ZB1LLdrNKlGISDoCqnZCSAyLLe9jfQ60gfRH4WZAP1Gvj3RlNT5RHt5L3AIjLRfLfYSeJZBTO35cWSDJxuscOmZC7PNbIADWmfrjgvAYDZAIVGEymgaFOZAuqD04HzWkCRm9qNesFnOAKsCFY7GvnLp2QZDZD'},
+    qs: {access_token: ''},
     method: 'POST',
     json: {
       recipient: {id: sender},
